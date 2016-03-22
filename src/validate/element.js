@@ -22,6 +22,13 @@ function validateChecked() {
     }
 }
 
+/** compares one element value to another */
+function validateMatches(form, otherName) {
+    return function(el, cb) {
+        return cb(el.value == form.elements[otherName].value);
+    }
+}
+
 function validator(v, msg) {
     return {
         validator: v,
@@ -29,16 +36,10 @@ function validator(v, msg) {
     };
 }
 
-exports.validateNotEmpty = validateNotEmpty;
 exports.notEmpty = validateNotEmpty;
-
-exports.validateLength = validateLength;
 exports.length = validateLength;
-
-exports.validateRegExp = validateRegExp;
 exports.regExp = validateRegExp;
-
-exports.validateChecked = validateChecked;
 exports.checked = validateChecked;
+exports.matches = validateMatches;
 
 exports.validator = validator;

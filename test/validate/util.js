@@ -48,4 +48,16 @@ describe('Validate Util', function() {
             });
         });
     });
+    describe('#some', function() {
+        it('returns true if any of the mapped results are true', function(done) {
+            util.some(util.identity())([false, true, false], function(res) {
+                done(assert(res));
+            });
+        });
+        it('returns false if all mapped results are false', function(done) {
+            util.some(util.identity())([false, false, false], function(res) {
+                done(assert(!res));
+            });
+        });
+    })
 });

@@ -87,12 +87,13 @@ function validateFormRolling(validators, report) {
         }
 
         function onValidate(el, k, v, res) {
+            report(el, res ? null : v.message);
+
             var newState = res ? StateValid : StateInvalid;
             if (elStates[k] == newState) {
                 return; /* no change was made, no need to do anything */
             }
 
-            report(el, res ? null : v.message);
             elStates[k] = newState;
 
             if (submitBtn && conf.disableSubmit) {
@@ -106,17 +107,25 @@ function validateFormRolling(validators, report) {
         /** assign listeners */
         forEach(validators, function(v, k) {
             var el = form.elements[k];
-            function onEvent(e) {
+            function onEvent() {
                 v.validator(el, function(res) {
                     onValidate(el, k, v, res);
                 });
             }
             conf.events.forEach(function(ev) {
-                el.addEventListener(ev, onEvent);
+                if (!el.nodeName && el.length) {
+                    forEach(el, function(el) {
+                        el.addEventListener(ev, onEvent);
+                    });
+                }
+                else {
+                    el.addEventListener(ev, onEvent);
+                }
+
             });
 
             /* if the element already has a value, then run the validation */
-            if (el.value) {
+            if (!el.length && el.value && el.type == "text") {
                 onEvent();
             }
         });
@@ -154,7 +163,7 @@ function validateForm(validators) {
     }
 }
 
-exports.validateForm = validateForm;
-exports.validateFormHtml = validateFormHtml;
-exports.validateFormRolling = validateFormRolling;
+exports.form = validateForm;
+exports.formHtml = validateFormHtml;
+exports.formRolling = validateFormRolling;
 exports.onSubmit = onSubmit;

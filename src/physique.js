@@ -1,5 +1,7 @@
-exports.cmp = require('validate/cmp');
-exports.element = require('validate/element');
-exports.form = require('validate/form');
-exports.util = require('validate/util');
-exports.report = require('./report');
+var validate = require('./validate');
+var html = require('./html');
+var report = require('./report');
+
+exports.validate = validate;
+exports.html = html;
+exports.report = report;
