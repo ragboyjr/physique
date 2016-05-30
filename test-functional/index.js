@@ -14,8 +14,6 @@ var formValidator = v.formRolling({
     radio: validator(v.some(v.checked()), "You must select one of the options"),
 }, report.lazy(report.chain([report.log(), report.bootstrap(document)])));
 
-//var formValidator = v.onSubmit(formValidator);
-
 formValidator(form, function(res) {
     console.log(res);
 });

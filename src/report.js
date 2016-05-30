@@ -39,43 +39,68 @@ function blackHoleReport() {
     return function(el, err) {}
 }
 
-function getParentErrorElement(document, parent, create) {
-    var el = parent.querySelector('[data-physique-error]');
+function findOrCreateElement(document, parent, noCreate) {
+    var el = find(parent);
     if (el) {
         return el;
     }
 
-    var el = document.createElement('span');
-    el.setAttribute('class', 'help-block');
-    el.setAttribute('data-physique-error', '');
-
+    el = create(document);
     parent.appendChild(el);
 
     return el;
 }
 
-function updateErrorMessage(document, parent, err) {
-    if (!document) {
-        return;
-    }
+function findErrorElement(parent) {
+    return parent.querySelector('[data-physique-error]');
+}
 
-    if (err) {
-        getParentErrorElement(document, parent, true).textContent = err;
-        return;
-    }
+function createErrorElement(document) {
+    var el = document.createElement('span');
+    el.setAttribute('class', 'help-block');
+    el.setAttribute('data-physique-error', '');
 
-    /* either remove the element or do nothing */
-    var el = getParentErrorElement(document, parent, false);
-    if (!el) {
-        return;
-    }
+    return el;
+}
 
-    el.parentNode.removeChild(el);
+function appendErrorElement(parent, el) {
+    parent.appendChild(el);
+    return el;
+}
+
+function updateErrorMessage(findErrorElement, createErrorElement, appendErrorElement) {
+    return function(document, parent, err) {
+        if (!document) {
+            return;
+        }
+
+        if (err) {
+            var el = findErrorElement(parent);
+            if (!el) {
+                el = appendErrorElement(parent, createErrorElement(document));
+            }
+            el.textContent = err;
+            return;
+        }
+
+        /* either remove the element or do nothing */
+        var el = findErrorElement(parent);
+        if (!el) {
+            return;
+        }
+
+        el.parentNode.removeChild(el);
+    }
 }
 
 /** updates an element form according to bootstrap semantics */
 function bootstrapReport() {
     var document = arguments[0];
+    var update = arguments[1] || updateErrorMessage(
+        findErrorElement,
+        createErrorElement,
+        appendErrorElement
+    );
 
     return function(el, err) {
         if (el.length) {
@@ -98,7 +123,7 @@ function bootstrapReport() {
             html.addClass(parent, 'has-success');
         }
 
-        updateErrorMessage(document, parent, err);
+        update(document, parent, err);
     }
 }
 
@@ -107,3 +132,8 @@ exports.bootstrap = bootstrapReport;
 exports.blackHole = blackHoleReport;
 exports.log = logReport;
 exports.chain = chainReport;
+
+exports.updateErrorMessage = updateErrorMessage;
+exports.findErrorElement = findErrorElement;
+exports.createErrorElement = createErrorElement;
+exports.appendErrorElement = appendErrorElement;
