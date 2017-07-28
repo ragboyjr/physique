@@ -17,7 +17,7 @@ var validator = physique.make(form, physique.form({
                     } else {
                         resolve(physique.ok('invalid_email'));
                     }
-                }, 2000);
+                }, 500);
             });
         }
     ]),
@@ -28,7 +28,6 @@ var validator = physique.make(form, physique.form({
     confirmPassword: physique.matches('password')
 }))
 .configure({
-    disableSubmit: false,
     tillSubmit: true
 })
 .setReport(physique.bootstrapReport())

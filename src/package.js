@@ -53,19 +53,15 @@ function reportPackage() {
 
             function reportResultCol(resultCol) {
                 if (!resultCol.element) {
-                    console.log('resul col did not have element');
                     return;
                 }
-                console.log(resultCol.element.name);
                 reportEl(resultCol.element, resultCol.isValid());
             }
 
             validator.on('form.results', function(resultCol, validator) {
-                console.log('reporting result col');
                 if (validator.config.tillSubmit && !hasSubmit) {
                     return;
                 }
-                console.log('reporting result col');
                 reportResultCol(resultCol);
             });
             validator.on('form.submit', function(validateResult, validator) {
@@ -103,7 +99,6 @@ function matchesSyncPackage() {
                 validator.validate({
                     validationKeys: [matchesElName]
                 })
-                .then(function(res) { console.log(res); return res;})
                 .then(emit.createEmitFormResults(validator))
                 .then(null, console.log);
             }

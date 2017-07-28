@@ -7,14 +7,6 @@ var Promise = require('es6-promise').Promise
 var reduce = require('lodash/reduce');
 var ee = require('event-emitter');
 
-// export validate exports into this package
-[validate, pkg, report].forEach(function(mod) {
-    reduce(mod, function(exports, value, key) {
-        exports[key] = value;
-        return exports;
-    }, exports);
-});
-exports.Promise = require('es6-promise').Promise;
 
 function make(form, validateForm) {
     return (new WrappedValidator(form, validateForm)).with(pkg.stdPackage());
@@ -97,3 +89,12 @@ WrappedValidator.prototype.setReport = function(report) {
 ee(WrappedValidator.prototype);
 
 exports.make = make;
+exports.Promise = Promise;
+
+// export validate exports into this package
+[validate, pkg, report].forEach(function(mod) {
+    reduce(mod, function(exports, value, key) {
+        exports[key] = value;
+        return exports;
+    }, exports);
+});

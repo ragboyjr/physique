@@ -1,7 +1,5 @@
-var defaults = require('lodash/defaults');
 var debounce = require('lodash/debounce');
 var forEach = require('lodash/foreach');
-var validate = require('./validate');
 var dom = require('domquery');
 
 // setup dom event listeners on the form
@@ -49,12 +47,7 @@ function domListenerEmitter(validator) {
 function createEmitFormResults(validator) {
     return function(validateResult) {
         validateResult.resultCollections.forEach(function(results) {
-            console.log('emitting form results', validator);
-            try {
-                validator.emit('form.results', results, validator);
-            } catch (e) {
-                console.log(e);
-            }
+            validator.emit('form.results', results, validator);
         });
         return validateResult;
     };
