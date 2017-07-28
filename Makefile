@@ -4,7 +4,7 @@ istanbul = ./node_modules/.bin/istanbul
 browserify = ./node_modules/.bin/browserify
 
 ifndef MOCHA_PATH
-    MOCHA_PATH = test
+    MOCHA_PATH = test/physique.js
 endif
 
 .PHONY: test coverage test-functional
