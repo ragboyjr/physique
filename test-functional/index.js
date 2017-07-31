@@ -4,6 +4,18 @@ var dom = require('domquery');
 var form = document.forms['main'];
 var emit = require('emit');
 
+function emporiumPackage() {
+    return function(validator) {
+        validator.configure({
+            postValidateEventTypes: ['input']
+        })
+        .setReport(physique.bootstrapReport({showSuccess: false}))
+        .on('form.valid', function(validateResult, validator) {
+            validator.form.submit();
+        });
+    }
+}
+
 var validator = physique.make(form, physique.form({
     firstName: physique.notEmpty(),
     lastName: physique.notEmpty(),
@@ -17,7 +29,7 @@ var validator = physique.make(form, physique.form({
                     } else {
                         resolve(physique.ok('invalid_email'));
                     }
-                }, 500);
+                }, 250);
             });
         }
     ]),
@@ -27,28 +39,7 @@ var validator = physique.make(form, physique.form({
     password: physique.minLength(4),
     confirmPassword: physique.matches('password')
 }))
-.configure({
-    tillSubmit: true
-})
-.setReport(physique.bootstrapReport())
-.on('form.results', function(resultCollection) {
-    if (resultCollection.element.name == "confirmPassword") {
-        console.log(resultCollection);
-    }
-})
-.on('form.validate', function(validateResult) {
-    console.log('logging validate');
-    console.log(validateResult.isValid);
-})
-.on('form.valid', function(validateResult, validator) {
-    console.log("I'm submitting the form!");
-    setTimeout(function() {
-        validator.form.submit();
-    }, 2000);
-})
-.on('form.results', function() {
-    console.log('test');
-})
+.with(emporiumPackage())
 .run();
 
 

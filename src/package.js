@@ -42,6 +42,43 @@ function disableSubmitPackage() {
 }
 
 function reportPackage() {
+    function createTillSubmitFilter(validator, report) {
+        var hasSubmit = false;
+
+        return function(resultCol, validator, event) {
+            if (validator.config.tillSubmit && !hasSubmit) {
+                return false;
+            }
+
+            return true;
+        }
+
+        validator.on('form.submit', function(validateResult, validator) {
+            hasSubmit = true;
+            validateResult.resultCollections.forEach(function(col) {
+                col.report(report);
+            });
+        });
+    }
+
+    function createPostValidateEventFilter(validator) {
+        var postValidateEventTypes = validator.config.postValidateEventTypes;
+        var postValidateEventState = {};
+
+        return function(resultCol, validator, event) {
+            if (!resultCol.element) {
+                return true;
+            }
+
+            if (event && postValidateEventTypes.indexOf(event.type) > -1) {
+                return postValidateEventState[resultCol.element.name] == true;
+            } else {
+                postValidateEventState[resultCol.element.name] = true;
+                return true;
+            }
+        }
+    }
+
     return function(validator) {
         validator.bootstraps.unshift(function(validator) {
             if (!validator.report) {
@@ -49,24 +86,23 @@ function reportPackage() {
             }
 
             var reportEl = report.lazyReport(validator.report);
-            var hasSubmit = false;
+            var reportFilters = [];
 
-            function reportResultCol(resultCol) {
-                if (!resultCol.element) {
-                    return;
-                }
-                reportEl(resultCol.element, resultCol.isValid());
+            if (validator.config.tillSubmit) {
+                reportFilters.push(createTillSubmitFilter(validator, reportEl));
+            }
+            if (validator.config.postValidateEventTypes.length) {
+                reportFilters.push(createPostValidateEventFilter(validator, reportEl));
             }
 
-            validator.on('form.results', function(resultCol, validator) {
-                if (validator.config.tillSubmit && !hasSubmit) {
-                    return;
+            validator.on('form.results', function(resultCol, validator, event) {
+                var shouldReport = reportFilters.every(function(filter) {
+                    return filter(resultCol, validator, event);
+                });
+
+                if (shouldReport) {
+                    resultCol.report(reportEl);
                 }
-                reportResultCol(resultCol);
-            });
-            validator.on('form.submit', function(validateResult, validator) {
-                hasSubmit = true;
-                validateResult.resultCollections.forEach(reportResultCol);
             });
         });
     }

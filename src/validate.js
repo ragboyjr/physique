@@ -27,6 +27,14 @@ ValidationResultCollection.prototype.isEmpty = function() {
     return this.results.length == 0;
 }
 
+ValidationResultCollection.prototype.report = function(report) {
+    if (!this.element) {
+        return;
+    }
+
+    report(this.element, this.isValid());
+}
+
 ValidationResultCollection.accumulateFromResults = function(results) {
     var formResults = new ValidationResultCollection(null, []);
     var elResults = results.reduce(function(acc, result) {

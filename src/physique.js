@@ -69,14 +69,16 @@ WrappedValidator.prototype.with = function(pkg) {
 }
 
 WrappedValidator.prototype.configure = function(config) {
-    this.config = defaults(config, {
+    this.config = defaults(config, this.config || {}, {
         rolling: true,
         runValidate: true,
         tillSubmit: false,
+        postValidateEventTypes: [],
         eventTypes: ['input', 'change'],
         wait: 250,
         syncMatches: true,
         disableSubmit: false,
+        submitOnValid: true
     });
     return this;
 }

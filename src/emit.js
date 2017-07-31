@@ -31,7 +31,7 @@ function domListenerEmitter(validator) {
         }
 
         validator.validate({validationKeys: [el.name]})
-            .then(createEmitFormResults(validator))
+            .then(createEmitFormResults(validator, event))
             .then(null, console.log);
 
         rollingValidate(el);
@@ -44,10 +44,10 @@ function domListenerEmitter(validator) {
     });
 }
 
-function createEmitFormResults(validator) {
+function createEmitFormResults(validator, event) {
     return function(validateResult) {
         validateResult.resultCollections.forEach(function(results) {
-            validator.emit('form.results', results, validator);
+            validator.emit('form.results', results, validator, event);
         });
         return validateResult;
     };
