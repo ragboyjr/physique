@@ -11,6 +11,7 @@ function stdPackage() {
         validator.with(matchesSyncPackage());
         validator.with(disableSubmitPackage());
         validator.with(reportPackage());
+        validator.with(submitOnValidPackage());
     }
 }
 
@@ -155,7 +156,22 @@ function matchesSyncPackage() {
     }
 }
 
+function submitOnValidPackage() {
+    return function (validator) {
+        validator.bootstraps.push(function(validator) {
+            if (!validator.config.submitOnValid) {
+                return;
+            }
+
+            validator.on('form.valid', function(validateResult, validator) {
+                validator.form.submit();
+            });
+        });
+    }
+}
+
 exports.stdPackage = stdPackage;
 exports.disableSubmitPackage = disableSubmitPackage;
 exports.reportPackage = reportPackage;
 exports.matchesSyncPackage = matchesSyncPackage;
+exports.submitOnValidPackage = submitOnValidPackage;
