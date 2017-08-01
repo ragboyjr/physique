@@ -1,5 +1,5 @@
-/* Reports are what do any of the validation reporting and UI updating. */
-var html = require('./html');
+var dom = require('domquery');
+var defaults = require('lodash/defaults');
 
 /** report decorator for only calling the decorated report when a state has
     actually changed */
@@ -39,101 +39,31 @@ function blackHoleReport() {
     return function(el, err) {}
 }
 
-function findOrCreateElement(document, parent, noCreate) {
-    var el = find(parent);
-    if (el) {
-        return el;
-    }
-
-    el = create(document);
-    parent.appendChild(el);
-
-    return el;
-}
-
-function findErrorElement(parent) {
-    return parent.querySelector('[data-physique-error]');
-}
-
-function createErrorElement(document) {
-    var el = document.createElement('span');
-    el.setAttribute('class', 'help-block');
-    el.setAttribute('data-physique-error', '');
-
-    return el;
-}
-
-function appendErrorElement(parent, el) {
-    parent.appendChild(el);
-    return el;
-}
-
-function updateErrorMessage(findErrorElement, createErrorElement, appendErrorElement) {
-    return function(document, parent, err) {
-        if (!document) {
-            return;
-        }
-
-        if (err) {
-            var el = findErrorElement(parent);
-            if (!el) {
-                el = appendErrorElement(parent, createErrorElement(document));
-            }
-            el.textContent = err;
-            return;
-        }
-
-        /* either remove the element or do nothing */
-        var el = findErrorElement(parent);
-        if (!el) {
-            return;
-        }
-
-        el.parentNode.removeChild(el);
-    }
-}
-
 /** updates an element form according to bootstrap semantics */
-function bootstrapReport() {
-    var document = arguments[0];
-    var update = arguments[1] || updateErrorMessage(
-        findErrorElement,
-        createErrorElement,
-        appendErrorElement
-    );
+function bootstrapReport(config) {
+    config = defaults(config || {}, {
+        showSuccess: true,
+        showError: true,
+    });
+    return function(el, isValid) {
+        var parent = dom(el).parent('.form-group');
 
-    return function(el, err) {
-        if (el.length) {
-            el = el[0];
-        }
-
-        var parent = html.findParent(el, function(el) {
-            return html.hasClass(el, 'form-group');
-        });
         if (!parent) {
             return;
         }
 
-        if (err) {
-            html.removeClass(parent, 'has-success');
-            html.addClass(parent, 'has-error');
+        if (isValid) {
+            config.showSuccess && dom(parent).addClass('has-success');
+            config.showError && dom(parent).removeClass('has-error');
+        } else {
+            config.showSuccess && dom(parent).removeClass('has-success');
+            config.showError && dom(parent).addClass('has-error');
         }
-        else {
-            html.removeClass(parent, 'has-error');
-            html.addClass(parent, 'has-success');
-        }
-
-        update(document, parent, err);
     }
 }
 
-exports.lazy = lazyReport;
-exports.bootstrap = bootstrapReport;
-exports.blackHole = blackHoleReport;
-exports.log = logReport;
-exports.chain = chainReport;
-
-exports.updateErrorMessage = updateErrorMessage;
-exports.findErrorElement = findErrorElement;
-exports.createErrorElement = createErrorElement;
-exports.appendErrorElement = appendErrorElement;
+exports.lazyReport = lazyReport;
+exports.bootstrapReport = bootstrapReport;
+exports.blackHoleReport = blackHoleReport;
+exports.logReport = logReport;
+exports.chainReport = chainReport;

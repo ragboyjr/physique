@@ -20,11 +20,10 @@
     "mocha": "^2.4.5"
   },
   "dependencies": {
-    "lodash.defaults": "^4.0.1",
-    "lodash.foreach": "^4.1.0",
-    "lodash.isempty": "^4.1.3",
-    "lodash.map": "^4.2.1",
-    "lodash.zip": "^4.0.0",
-    "promise": "^7.1.1"
+    "domquery": "^3.0.0",
+    "es6-promise": "^4.1.1",
+    "event-emitter": "^0.3.5",
+    "lodash": "^4.17.4",
+    "ware": "^1.3.0"
   }
 }
