@@ -7,9 +7,9 @@ var emit = require('emit');
 function emporiumPackage() {
     return function(validator) {
         validator.configure({
-            postValidateEventTypes: ['input']
+            // postValidateEventTypes: ['input']
         })
-        .setReport(physique.bootstrapReport({showSuccess: false}))
+        .setReport(physique.bootstrapReport({showSuccess: true}))
         .on('form.valid', function(validateResult, validator) {
             validator.form.submit();
         });
@@ -41,17 +41,3 @@ var validator = physique.make(form, physique.form({
 }))
 .with(emporiumPackage())
 .run();
-
-
-// var formValidator = v.formRolling({
-//     first_name: validator(v.notEmpty(), "Please enter a first name"),
-//     last_name: validator(v.notEmpty(), "Please enter a last name"),
-//     email: validator(v.regExp(/.+@.+/), "Invalid email address"),
-//     state: validator(v.notEmpty(), "Please choose a state"),
-//     check: validator(v.checked(), "You must check the box"),
-//     radio: validator(v.some(v.checked()), "You must select one of the options"),
-// }, report.lazy(report.chain([report.log(), report.bootstrap(document)])));
-//
-// formValidator(form, function(res) {
-//     console.log(res);
-// });

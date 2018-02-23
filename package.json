@@ -1,6 +1,6 @@
 {
   "name": "physique",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Functional frontend form validation designed for npm",
   "main": "src/physique.js",
   "scripts": {
@@ -23,7 +23,6 @@
     "domquery": "^3.0.0",
     "es6-promise": "^4.1.1",
     "event-emitter": "^0.3.5",
-    "lodash": "^4.17.4",
-    "ware": "^1.3.0"
+    "lodash": "^4.17.4"
   }
 }
