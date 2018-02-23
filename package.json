@@ -1,6 +1,6 @@
 {
   "name": "physique",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Functional frontend form validation designed for npm",
   "main": "src/physique.js",
   "scripts": {
