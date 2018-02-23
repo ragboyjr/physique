@@ -1,5 +1,5 @@
 var debounce = require('lodash/debounce');
-var forEach = require('lodash/foreach');
+var forEach = require('lodash/forEach');
 var dom = require('domquery');
 
 // setup dom event listeners on the form
@@ -14,6 +14,8 @@ function domListenerEmitter(validator) {
             }
             validator.emit('form.valid', validateResult, validator);
         });
+
+        return false;
     });
 
     var rollingValidate = debounce(function(el) {

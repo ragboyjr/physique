@@ -11,7 +11,7 @@ function emporiumPackage() {
         })
         .setReport(physique.bootstrapReport({showSuccess: true}))
         .on('form.valid', function(validateResult, validator) {
-            validator.form.submit();
+            // validator.form.submit();
         });
     }
 }

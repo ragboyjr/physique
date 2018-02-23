@@ -1,5 +1,5 @@
 var Promise = require('es6-promise').Promise;
-var isArray = require('lodash/isarray');
+var isArray = require('lodash/isArray');
 var keys = require('lodash/keys');
 var map = require('lodash/map');
 var clone = require('lodash/clone');
