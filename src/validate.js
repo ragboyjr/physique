@@ -148,25 +148,29 @@ function form(validators) {
         ctx = ctx || {};
 
         var validationKeys = ctx.validationKeys || keys(validators);
-        var results = validationKeys.map(function(key) {
-            var el = form.elements[key];
-            if (!el) {
-                throw "Form element " + key + " does not exist in form. Check form validator.";
-            }
-            return validators[key](el, ctx).then(function(results) {
-                if (!isArray(results)) {
-                    results = [results];
+        var results = validationKeys
+            .filter(function(key) {
+                return validators[key];
+            })
+            .map(function(key) {
+                var el = form.elements[key];
+                if (!el) {
+                    throw "Form element " + key + " does not exist in form. Check form validator.";
                 }
-
-                return results.map(function(res) {
-                    if (res.elements.length) {
-                        return res;
+                return validators[key](el, ctx).then(function(results) {
+                    if (!isArray(results)) {
+                        results = [results];
                     }
 
-                    return res.withElements([el]);
+                    return results.map(function(res) {
+                        if (res.elements.length) {
+                            return res;
+                        }
+
+                        return res.withElements([el]);
+                    });
                 });
             });
-        });
 
         return Promise.all(results).then(function(results) {
             return flatten(results);
