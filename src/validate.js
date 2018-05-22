@@ -226,7 +226,7 @@ function minLength(min) {
 
 function maxLength(max) {
     return function(el) {
-        if (el.value.length <= min) {
+        if (el.value.length <= max) {
             return ok('maxLength');
         }
 
